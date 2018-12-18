@@ -80,7 +80,7 @@ struct vnode {
  *
  *****************************************
  *
- *    vop_read        - Read data from file to uio, at offset specified
+ *    vop_read        - Recad data from file to uio, at offset specified
  *                      in the uio, updating uio_resid to reflect the
  *                      amount read, and updating uio_offset to match.
  *                      Not allowed on directories or symlinks.

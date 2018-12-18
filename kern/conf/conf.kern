@@ -388,6 +388,16 @@ file      syscall/loadelf.c
 file      syscall/runprogram.c
 file      syscall/time_syscalls.c
 
+file      syscall/pid.c
+file      syscall/io.c
+file      syscall/directory.c
+file      syscall/fork.c
+
+file      syscall/filesystem/fileTable.c
+file      syscall/filesystem/sysFileOps.c
+# file      include/sysfile.h
+# file      include/fileTable.h
+
 #
 # Startup and initialization
 #

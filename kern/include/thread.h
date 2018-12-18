@@ -95,6 +95,8 @@ struct thread {
 	struct proc *t_proc;		/* Process thread belongs to */
 	HANGMAN_ACTOR(t_hangman);	/* Deadlock detector hook */
 
+	pid_t t_pid;
+
 	/*
 	 * Interrupt state fields.
 	 *

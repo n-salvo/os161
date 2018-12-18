@@ -59,4 +59,40 @@ __DEAD void enter_new_process(int argc, userptr_t argv, userptr_t env,
 int sys_reboot(int code);
 int sys___time(userptr_t user_seconds, userptr_t user_nanoseconds);
 
+int sys_getpid(pid_t *retval);
+
+int sys_read(int filehandle, void *buf, size_t buf_size);
+int sys_write(int filehandle, const char *buf, size_t num_bytes);
+int sys_getcwd(char *buf, size_t buflen);
+
+/*
+ * lseek codes
+ * SEEK_SET      0      Seek relative to beginning of file
+ * SEEK_CUR      1      Seek relative to current position in file
+ * SEEK_END      2      Seek relative to end of file
+ */
+off_t sys_lseek(int filehandle, off_t pos, int code);
+int sys_chdir(const char *path);
+int sys_dup2(int filehandle, int newhandle);
+
+/*
+ * Flags for opening	kern/include/kern/fcntl.h
+ * 0_RDONLY		0
+ * 0_WRONLY		1
+ * O_RDWR		2
+ * 
+ * O_CREAT		4
+ * O_EXCL		8
+ * O_TRUNC		16
+ * O_APPEND		32
+ * O_NOCTTY		64
+ *
+ */
+int sys_open(const char *filename, int flags);
+int sys_close(int filehandle);
+
+
+pid_t sys_fork(void);
+int sys_execv(const char *prog, char *const *args);
+
 #endif /* _SYSCALL_H_ */

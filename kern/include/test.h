@@ -74,6 +74,10 @@ int rwtest3(int, char **);
 int rwtest4(int, char **);
 int rwtest5(int, char **);
 
+/* rwtest helper functions */
+void test_simulated_read(void *rwlock, unsigned long value);
+void test_simulated_write(void *rwlock, unsigned long value);
+
 /* semaphore unit tests */
 int semu1(int, char **);
 int semu2(int, char **);

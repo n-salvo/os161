@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "OS/161",
+            "includePath": [
+                "${workspaceFolder}",
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/kern/compile/DUMBVM/includelinks/kern/machine/types.h",
+                "${workspaceFolder}/kern/compile/DUMBVM/includelinks/machine/**",
+                "${workspaceFolder}/kern/compile/DUMBVM/includelinks/kern/machine/*",
+                "${workspaceFolder}/kern/compile/DUMBVM/includelinks/kern/machine/**",
+                "${workspaceFolder}/kern/compile/DUMBVM/includelinks/kern/*",
+                "${workspaceFolder}/kern/compile/DUMBVM/includelinks/kern/**",
+                "${workspaceFolder}/kern/compile/DUMBVM/includelinks/kern/",
+                "${workspaceFolder}/kern/compile/DUMBVM/includelinks/machine/*",
+                "${workspaceFolder}/kern/arch/mips/include/*",
+                "${workspaceFolder}/kern/arch/mips/include/**",
+                "${workspaceFolder}/kern/include/*",
+                "${workspaceFolder}/kern/include/**",
+                "usr/lib/gcc/x86_64-linux-gnu/7/include/*",
+                "usr/lib/gcc/x86_64-linux-gnu/7/include/**"
+            ],
+            "defines": ["OPT_HANGMAN", "SPINLOCK_INITIALIZER", "__NEED_CURCPU", "__NEED_CURTHREAD", "__cplusplus"],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c99",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}

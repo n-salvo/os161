@@ -40,11 +40,22 @@
 #include <test.h>
 #include <synch.h>
 
+void match_if_possible(void);
+
+struct semaphore *male_whale, *female_whale, *matchmaker_whale, *whale_mutex;
+volatile int waiting_males, waiting_females, waiting_matchmakers;
+
 /*
  * Called by the driver during initialization.
  */
-
 void whalemating_init() {
+	male_whale = sem_create("male_whale", 0);
+	female_whale = sem_create("female_whale", 0);
+	matchmaker_whale = sem_create("matchmaker_whale", 0);
+	whale_mutex = sem_create("whale_mutex", 1);
+	waiting_females = 0;
+	waiting_males = 0;
+	waiting_matchmakers = 0;
 	return;
 }
 
@@ -52,40 +63,66 @@ void whalemating_init() {
  * Called by the driver during teardown.
  */
 
-void
-whalemating_cleanup() {
+void whalemating_cleanup() {
+	sem_destroy(male_whale);
+	sem_destroy(female_whale);
+	sem_destroy(matchmaker_whale);
+	sem_destroy(whale_mutex);
 	return;
 }
 
-void
-male(uint32_t index)
-{
-	(void)index;
+void male(uint32_t index) {
 	/*
 	 * Implement this function by calling male_start and male_end when
 	 * appropriate.
 	 */
+	male_start(index);
+	P(whale_mutex);
+	waiting_males++;
+	match_if_possible();
+	V(whale_mutex);
+	P(male_whale);
+	male_end(index);
 	return;
 }
 
-void
-female(uint32_t index)
-{
-	(void)index;
+void female(uint32_t index) {
 	/*
 	 * Implement this function by calling female_start and female_end when
 	 * appropriate.
 	 */
+	female_start(index);
+	P(whale_mutex);
+	waiting_females++;
+	match_if_possible();
+	V(whale_mutex);
+	P(female_whale);
+	female_end(index);
 	return;
 }
 
-void
-matchmaker(uint32_t index)
-{
-	(void)index;
+void matchmaker(uint32_t index) {
 	/*
 	 * Implement this function by calling matchmaker_start and matchmaker_end
 	 * when appropriate.
 	 */
+	matchmaker_start(index);
+	P(whale_mutex);
+	waiting_matchmakers++;
+	match_if_possible();
+	V(whale_mutex);
+	P(matchmaker_whale);
+	matchmaker_end(index);
 	return;
+}
+
+void match_if_possible() {
+	while(waiting_females && waiting_males && waiting_matchmakers) {
+		waiting_females--;
+		waiting_males--;
+		waiting_matchmakers--;
+		V(female_whale);
+		V(male_whale);
+		V(matchmaker_whale);
+	};
 }

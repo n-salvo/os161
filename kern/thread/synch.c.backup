@@ -39,17 +39,28 @@
 #include <thread.h>
 #include <current.h>
 #include <synch.h>
+#include <thread.h>
+#include <types.h>
+#include <wchan.h>
+
+//### Keep intellisense happy
+// #define NULL ((void *)0)
+// #define false   0
+// #define true    1
+// #define bool int
+//###
 
 ////////////////////////////////////////////////////////////
 //
 // Semaphore.
 
-struct semaphore *
-sem_create(const char *name, unsigned initial_count)
-{
+
+
+struct semaphore *sem_create(const char *name, unsigned initial_count) {
 	struct semaphore *sem;
 
-	sem = kmalloc(sizeof(*sem));
+	//sem = kmalloc(sizeof(*sem));
+	sem = kmalloc(sizeof(struct semaphore));
 	if (sem == NULL) {
 		return NULL;
 	}
@@ -73,9 +84,7 @@ sem_create(const char *name, unsigned initial_count)
 	return sem;
 }
 
-void
-sem_destroy(struct semaphore *sem)
-{
+void sem_destroy(struct semaphore *sem) {
 	KASSERT(sem != NULL);
 
 	/* wchan_cleanup will assert if anyone's waiting on it */
@@ -85,9 +94,7 @@ sem_destroy(struct semaphore *sem)
 	kfree(sem);
 }
 
-void
-P(struct semaphore *sem)
-{
+void P(struct semaphore *sem) {
 	KASSERT(sem != NULL);
 
 	/*
@@ -120,9 +127,7 @@ P(struct semaphore *sem)
 	spinlock_release(&sem->sem_lock);
 }
 
-void
-V(struct semaphore *sem)
-{
+void V(struct semaphore *sem) {
 	KASSERT(sem != NULL);
 
 	spinlock_acquire(&sem->sem_lock);
@@ -141,8 +146,7 @@ V(struct semaphore *sem)
 struct lock *lock_create(const char *name) {
 	struct lock *lock;
 
-	lock = kmalloc(sizeof(*lock));
-    // lock = kmalloc(sizeof(struct lock));
+    lock = kmalloc(sizeof(struct lock));
 	if (lock == NULL) {
 		return NULL;
 	}
@@ -246,10 +250,7 @@ bool lock_do_i_hold(struct lock *lock) {
 //
 // CV
 
-
-struct cv *
-cv_create(const char *name)
-{
+struct cv *cv_create(const char *name) {
 	struct cv *cv;
 
 	cv = kmalloc(sizeof(*cv));
@@ -258,7 +259,7 @@ cv_create(const char *name)
 	}
 
 	cv->cv_name = kstrdup(name);
-	if (cv->cv_name==NULL) {
+    if (cv->cv_name == NULL) {
 		kfree(cv);
 		return NULL;
 	}
@@ -268,9 +269,7 @@ cv_create(const char *name)
 	return cv;
 }
 
-void
-cv_destroy(struct cv *cv)
-{
+void cv_destroy(struct cv *cv) {
 	KASSERT(cv != NULL);
 
 	// add stuff here as needed
@@ -279,31 +278,48 @@ cv_destroy(struct cv *cv)
 	kfree(cv);
 }
 
-void
-cv_wait(struct cv *cv, struct lock *lock)
-{
+void cv_wait(struct cv *cv, struct lock *lock) {
 	// Write this
 	(void)cv;    // suppress warning until code gets written
 	(void)lock;  // suppress warning until code gets written
 }
 
-void
-cv_signal(struct cv *cv, struct lock *lock)
-{
+void cv_signal(struct cv *cv, struct lock *lock) {
 	// Write this
 	(void)cv;    // suppress warning until code gets written
 	(void)lock;  // suppress warning until code gets written
 }
 
-void
-cv_broadcast(struct cv *cv, struct lock *lock)
-{
-	// Write this
+void cv_broadcast(struct cv *cv, struct lock *lock) {
+	// Write this 
 	(void)cv;    // suppress warning until code gets written
 	(void)lock;  // suppress warning until code gets written
 }
 
 
+// struct rwlock *rwlock_create(const char * rwlock_name) {
+// 	struct rwlock *lock = kmalloc(sizeof(struct rwlock));
+// 	lock->rwlock_name = kstrdup(rwlock_name);
+// 	lock->mutex = sem_create(lock->rwlock_name, 1);
+// 	lock->read_ok = sem_create(lock->rwlock_name, 0);
+// 	lock->write_ok = sem_create(lock->rwlock_name, 0);
+// 	lock->locked_for_readers = sem_create(lock->rwlock_name, 1);
+// 	lock->locked_for_writer = sem_create(lock->rwlock_name, 1);
+
+// 	lock->r_waiting = 0;
+// 	lock->r_reading = 0;
+// 	lock->w_waiting = 0;
+// 	lock->active_writer = 0;
+// 	lock->read_turns = 0;
+// 	lock->write_turns = 0;
+
+// 	return lock;
+// }
+
+// void rwlock_destroy(struct rwlock *rwlock) {
+// 	kfree(rwlock->rwlock_name);
+// 	kfree(rwlock);
+// }
 
 struct rwlock *rwlock_create(const char * rwlock_name) {
 	struct rwlock *lock = kmalloc(sizeof(struct rwlock));

@@ -52,6 +52,8 @@ vnode_init(struct vnode *vn, const struct vnode_ops *ops,
 	spinlock_init(&vn->vn_countlock);
 	vn->vn_fs = fs;
 	vn->vn_data = fsdata;
+	//vn->vn_fullpath = kmalloc(sizeof(char) * 2048);
+	//vn->vn_pathmaxlen = 2048;
 	return 0;
 }
 
@@ -69,6 +71,8 @@ vnode_cleanup(struct vnode *vn)
 	vn->vn_refcount = 0;
 	vn->vn_fs = NULL;
 	vn->vn_data = NULL;
+	//kfree(vn->vn_fullpath);
+	//vn->vn_pathmaxlen = 0;
 }
 
 

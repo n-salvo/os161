@@ -57,7 +57,7 @@ void sem_destroy(struct semaphore *);
  * Operations (both atomic):
  *     P (proberen): decrement count. If the count is 0, block until
  *                   the count is 1 again before decrementing.
- *     V (verhogen): increment count.
+ *     V (verhogen): increment count. Never block
  */
 void P(struct semaphore *);
 void V(struct semaphore *);
@@ -76,6 +76,10 @@ struct lock {
         char *lk_name;
         HANGMAN_LOCKABLE(lk_hangman);   /* Deadlock detector hook. */
         // add what you need here
+        struct wchan *lk_wchan;
+        volatile struct thread *lk_thread;
+        //bool locked;
+        struct spinlock lk_spinlock;
         // (don't forget to mark things volatile as needed)
 };
 
@@ -148,14 +152,32 @@ void cv_broadcast(struct cv *cv, struct lock *lock);
  * (should be) made internally.
  */
 
+// struct rwlock {
+//         char *rwlock_name;
+//         struct semaphore *mutex;
+//         struct semaphore *read_ok;
+//         struct semaphore *write_ok;
+//         struct semaphore *locked_for_readers;
+//         struct semaphore *locked_for_writer;
+//         volatile int r_waiting;
+//         volatile int r_reading;
+//         volatile int w_waiting;
+//         volatile int active_writer;
+// 	volatile int read_turns;
+// 	volatile int write_turns;
+//         // add what you need here
+//         // (don't forget to mark things volatile as needed)
+// };
 struct rwlock {
         char *rwlock_name;
-        // add what you need here
-        // (don't forget to mark things volatile as needed)
+        struct semaphore *roomEmpty;
+        struct semaphore *turnstile;
+        struct semaphore *mutex;
+        volatile int readers;
 };
 
-struct rwlock * rwlock_create(const char *);
-void rwlock_destroy(struct rwlock *);
+struct rwlock * rwlock_create(const char * rwlock_name);
+void rwlock_destroy(struct rwlock *rwlock);
 
 /*
  * Operations:
@@ -173,5 +195,10 @@ void rwlock_acquire_read(struct rwlock *);
 void rwlock_release_read(struct rwlock *);
 void rwlock_acquire_write(struct rwlock *);
 void rwlock_release_write(struct rwlock *);
+
+// void rwlock_acquire_read(struct rwlock *rwlock);
+// void rwlock_release_read(struct rwlock *rwlock);
+// void rwlock_acquire_write(struct rwlock *rwlock);
+// void rwlock_release_write(struct rwlock *rwlock);
 
 #endif /* _SYNCH_H_ */
